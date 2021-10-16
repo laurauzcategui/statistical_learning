@@ -1,0 +1,73 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+Model Selection 
+==============
+
+```{r}
+library(ISLR2)
+# Baseball Database
+summary(Hitters)
+```
+
+There are some missing values. So we need to remove them
+
+```{r}
+# Eliminate any row with missing values
+Hitters=na.omit(Hitters)
+with(Hitters, sum(is.na(Salary)))
+```
+Let's do Best Subset Regression 
+
+```{r}
+library(leaps)
+
+# let's do subset regression
+regfit.full=regsubsets(Salary~., data=Hitters)
+
+summary(regfit.full)
+```
+
+- The models seems nested, but it's actually not. 
+- It seems as it only picked up 8 features, let's do it in full 
+
+```{r}
+library(leaps)
+
+# let's do subset regression
+regfit.full=regsubsets(Salary~., data=Hitters, nvmax = 19)
+
+reg.summary=summary(regfit.full)
+# What is contained into Summary ( BIC, CP, RSS)
+names(reg.summary)
+
+# Plot the cp 
+plot(reg.summary$cp, xlab = "Number of Variables", ylab = "Cp" )
+which.min(reg.summary$cp)
+points(10, reg.summary$cp[10], pch=20, col="purple")
+```
+
+It seems cp is the smallest with the model of 10 predictors. 
+
+
+```{r}
+# Y-axis: cp 
+# Black indicates: Predictos IN, White: Predictors OUT 
+plot(regfit.full, scale="Cp")
+```
+
+Notice that: 
+- Bad CP's corresponded to models with all or none variables in it. 
+
+```{r}
+# get coeff
+coef(regfit.full, 10)
+```
+
+- Gives you the coeff for the model with 10 variables.
+
+
+
+
