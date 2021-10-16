@@ -26,6 +26,9 @@ RUN apt update
 # Install packages
 RUN install2.r tidyverse
 RUN install2.r ISLR2
+RUN install2.r leaps
+RUN install2.r --repos "https://cran.us.r-project.org"
+
 
 # All users can use /home/user as their home directory
 ENV HOME=/home/$user
